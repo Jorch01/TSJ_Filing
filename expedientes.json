@@ -63,7 +63,21 @@
     ],
     "BACALAR": [
       "JUZGADO FAMILIAR PRIMERA INSTANCIA BACALAR"
-    ]
+    ],
+    "SEGUNDA_INSTANCIA": [
+      "PRIMERA SALA CIVIL MERCANTIL Y FAMILIAR",
+      "SEGUNDA SALA PENAL ORAL",
+      "TERCERA SALA PENAL ORAL",
+      "CUARTA SALA CIVIL MERCANTIL Y FAMILIAR",
+      "QUINTA SALA CIVIL MERCANTIL Y FAMILIAR",
+      "SEXTA SALA CIVIL MERCANTIL Y FAMILIAR",
+      "SEPTIMA SALA PENAL TRADICIONAL",
+      "OCTAVA SALA PENAL ORAL",
+      "NOVENA SALA PENAL ORAL",
+      "DECIMA SALA CIVIL MERCANTIL Y FAMILIAR PLAYA",
+      "SALA CONSTITUCIONAL"
+    ],
+    "NOTA_SALAS": "⚠️ Las Salas de Segunda Instancia ya están agregadas, pero necesitas obtener los IDs del sistema. Ver INSTRUCCIONES_SALAS.md"
   },
   "expedientes": [
     {
@@ -113,6 +127,16 @@
       "comentario": "EJEMPLO: Expediente en Chetumal",
       "numero": "567/2024",
       "juzgado": "JUZGADO CIVIL CHETUMAL"
+    },
+    {
+      "comentario": "EJEMPLO: Expediente en SALA de Segunda Instancia (requiere IDs)",
+      "numero": "123/2024",
+      "juzgado": "PRIMERA SALA CIVIL MERCANTIL Y FAMILIAR"
+    },
+    {
+      "comentario": "EJEMPLO: Búsqueda en Sala Constitucional (requiere IDs)",
+      "numero": "456/2024",
+      "juzgado": "SALA CONSTITUCIONAL"
     }
   ]
 }
