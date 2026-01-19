@@ -89,6 +89,23 @@ class TSJExpedientesBot:
         
         # ===== BACALAR =====
         'JUZGADO FAMILIAR PRIMERA INSTANCIA BACALAR': 188,
+
+        # ===== SALAS DE SEGUNDA INSTANCIA =====
+        # ⚠️ IMPORTANTE: Los IDs de las salas deben obtenerse del sistema
+        # Ver archivo INSTRUCCIONES_SALAS.md para saber cómo encontrarlos
+        # Una vez que tengas los IDs, reemplaza 'None' con el número correcto
+
+        'PRIMERA SALA CIVIL MERCANTIL Y FAMILIAR': None,  # TODO: Agregar ID
+        'SEGUNDA SALA PENAL ORAL': None,  # TODO: Agregar ID
+        'TERCERA SALA PENAL ORAL': None,  # TODO: Agregar ID
+        'CUARTA SALA CIVIL MERCANTIL Y FAMILIAR': None,  # TODO: Agregar ID
+        'QUINTA SALA CIVIL MERCANTIL Y FAMILIAR': None,  # TODO: Agregar ID
+        'SEXTA SALA CIVIL MERCANTIL Y FAMILIAR': None,  # TODO: Agregar ID
+        'SEPTIMA SALA PENAL TRADICIONAL': None,  # TODO: Agregar ID
+        'OCTAVA SALA PENAL ORAL': None,  # TODO: Agregar ID
+        'NOVENA SALA PENAL ORAL': None,  # TODO: Agregar ID
+        'DECIMA SALA CIVIL MERCANTIL Y FAMILIAR PLAYA': None,  # TODO: Agregar ID
+        'SALA CONSTITUCIONAL': None,  # TODO: Agregar ID
     }
     
     def __init__(self, max_pestanas=5, dias_acuerdos_nuevos=5):
