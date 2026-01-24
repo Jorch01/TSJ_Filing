@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Robot de Búsqueda Automática de Expedientes v6.1
+Robot de Búsqueda Automática de Expedientes v6.2
 TSJ Quintana Roo - Lista Electrónica
 Autor: Jorge Israel Clemente Marié - Empírica Legal Lab
 
-VERSIÓN 6.1 - COMPLETA:
+VERSIÓN 6.2 - FIX CRÍTICO:
 - ✅ Búsquedas simultáneas en pestañas paralelas
 - ✅ Carga dinámica de expedientes desde archivo JSON
 - ✅ Reporte Excel con formato y marcado de acuerdos nuevos (últimos 5 días)
@@ -13,6 +13,7 @@ VERSIÓN 6.1 - COMPLETA:
 - ✅ Salas históricas y especializadas incluidas
 - ✅ Mejor manejo de errores y reintentos
 - ✅ Archivo de configuración separado
+- 🐛 FIX: Endpoint correcto para Salas (buscador_segunda.php + areaId)
 """
 
 from selenium import webdriver
@@ -116,7 +117,23 @@ class TSJExpedientesBot:
         '7A SALA ESPECIALIZADA FAMILIAR Y FAMILIAR ORAL': 117,
         '8A SALA ESPECIALIZADA PENAL': 116
     }
-    
+
+    # Mapeo de IDs de Sala a areaId (para buscador_segunda.php)
+    # Las Salas de Segunda Instancia requieren el parámetro areaId
+    AREA_IDS_SALAS = {
+        170: 145,  # PRIMERA SALA CIVIL MERCANTIL Y FAMILIAR
+        171: 146,  # SEGUNDA SALA PENAL ORAL
+        172: 147,  # DECIMA SALA CIVIL MERCANTIL Y FAMILIAR PLAYA
+        173: 148,  # TERCERA SALA PENAL ORAL
+        175: 150,  # QUINTA SALA CIVIL MERCANTIL Y FAMILIAR
+        176: 151,  # SEXTA SALA CIVIL MERCANTIL Y FAMILIAR
+        177: 152,  # SEPTIMA SALA PENAL TRADICIONAL
+        178: 153,  # OCTAVA SALA PENAL ORAL
+        179: 154,  # NOVENA SALA PENAL ORAL (confirmado del HAR)
+        183: 158,  # CUARTA SALA CIVIL MERCANTIL Y FAMILIAR
+        184: 159,  # SALA CONSTITUCIONAL
+    }
+
     def __init__(self, max_pestanas=5, dias_acuerdos_nuevos=5):
         self.base_url = "https://www.tsjqroo.gob.mx/estrados"
         self.driver = None
@@ -134,6 +151,39 @@ class TSJExpedientesBot:
         timestamp = datetime.now().strftime('%H:%M:%S')
         iconos = {"INFO": "ℹ️", "OK": "✅", "WARN": "⚠️", "ERROR": "❌", "DEBUG": "🔍"}
         print(f"[{timestamp}] {iconos.get(nivel, '•')} {msg}")
+
+    def es_sala_segunda_instancia(self, id_juzgado):
+        """
+        Determina si un ID corresponde a una Sala de Segunda Instancia
+        Las Salas requieren buscador_segunda.php con parámetro areaId
+        """
+        return id_juzgado in self.AREA_IDS_SALAS
+
+    def construir_url_busqueda(self, id_juzgado, termino, metodo=1):
+        """
+        Construye la URL correcta de búsqueda según el tipo de juzgado
+        - Primera Instancia: buscador_primera.php
+        - Segunda Instancia (Salas): buscador_segunda.php + areaId
+
+        Args:
+            id_juzgado: ID del juzgado/sala
+            termino: Término de búsqueda (expediente o nombre)
+            metodo: 1=expediente, 2=nombre
+
+        Returns:
+            URL completa para la búsqueda
+        """
+        if self.es_sala_segunda_instancia(id_juzgado):
+            # Sala de Segunda Instancia - usar buscador_segunda.php
+            area_id = self.AREA_IDS_SALAS[id_juzgado]
+            url = f"{self.base_url}/buscador_segunda.php?findexp={termino}&int={id_juzgado}&areaId={area_id}&metodo={metodo}"
+            self.log(f"🏛️  Sala de 2ª Instancia detectada - usando buscador_segunda.php (areaId={area_id})", "DEBUG")
+        else:
+            # Primera Instancia - usar buscador_primera.php
+            url = f"{self.base_url}/buscador_primera.php?int={id_juzgado}&metodo={metodo}&findexp={termino}"
+            self.log(f"📍 Juzgado de 1ª Instancia - usando buscador_primera.php", "DEBUG")
+
+        return url
     
     def screenshot(self, nombre):
         if self.debug_mode and self.driver:
@@ -249,17 +299,19 @@ class TSJExpedientesBot:
         metodo=2: por nombre (actores)
         """
         try:
-            url = f"{self.base_url}/buscador_primera.php?int={id_juzgado}&metodo={metodo}&findexp={termino}"
-            
+            # Construir URL correcta según tipo de juzgado
+            url = self.construir_url_busqueda(id_juzgado, termino, metodo)
+
             tipo = "expediente" if metodo == 1 else "nombre"
             self.log(f"Buscando {tipo}: {termino}")
+            self.log(f"URL: {url}", "DEBUG")
             self.driver.get(url)
             time.sleep(4)  # Esperar a que cargue la tabla
-            
+
             self.screenshot(f"resultado_{termino.replace('/', '_').replace(' ', '_')}")
             self.guardar_html(f"resultado_{termino.replace('/', '_').replace(' ', '_')}")
             return True
-            
+
         except Exception as e:
             self.log(f"Error en búsqueda: {e}", "ERROR")
             return False
@@ -364,7 +416,8 @@ class TSJExpedientesBot:
                 self.log(f"[Pestaña {pestana_idx}] Expediente sin número ni nombre", "ERROR")
                 return None
 
-            url = f"{self.base_url}/buscador_primera.php?int={id_juzgado}&metodo={metodo}&findexp={termino_busqueda}"
+            # Construir URL correcta según tipo de juzgado (1ª o 2ª Instancia)
+            url = self.construir_url_busqueda(id_juzgado, termino_busqueda, metodo)
 
             # Cambiar a la pestaña correspondiente
             self.driver.switch_to.window(self.driver.window_handles[pestana_idx])
