@@ -4,6 +4,17 @@
 
 ---
 
+## 🐛 ACTUALIZACIÓN IMPORTANTE - v6.2 (24 enero 2026)
+
+**Si estás usando una versión anterior a v6.2**, actualiza AHORA. Se corrigió un bug crítico:
+
+### ✅ FIX IMPLEMENTADO:
+Las búsquedas en **Salas de Segunda Instancia** ahora funcionan correctamente. Versiones anteriores usaban el endpoint incorrecto, causando que expedientes válidos mostraran "Sin publicaciones".
+
+**Si tu versión es v6.2 o superior, este problema está resuelto.**
+
+---
+
 ## ❓ ¿Por qué aparece "Sin publicaciones"?
 
 Cuando el bot reporta "Sin publicaciones" significa que el **sistema de estrados del TSJ** no tiene registros para ese expediente en ese juzgado/sala específico.

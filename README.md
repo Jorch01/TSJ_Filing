@@ -1,16 +1,23 @@
-# 🤖 Robot de Búsqueda Automática de Expedientes v6.1
+# 🤖 Robot de Búsqueda Automática de Expedientes v6.2
 ## Tribunal Superior de Justicia de Quintana Roo - Estrados Electrónicos
 
 ### 🎯 Características Principales
 
-🖥️ **Interfaz Gráfica** - Agrega expedientes visualmente sin editar JSON ⭐ NUEVO
-✅ **Salas de Segunda Instancia** - Soporte completo para las 11 salas de apelación
+🖥️ **Interfaz Gráfica** - Agrega expedientes visualmente sin editar JSON
+✅ **Salas de Segunda Instancia** - Soporte completo para las 11 salas de apelación 🐛 **CORREGIDO**
 ✅ **Búsquedas simultáneas** - Procesa múltiples expedientes en paralelo usando pestañas de Chrome
 ✅ **Carga dinámica** - Agrega expedientes desde GUI o editando `expedientes.json`
 ✅ **Reportes Excel mejorados** - Formato profesional con acuerdos nuevos marcados en amarillo
 ✅ **Detección inteligente** - Marca automáticamente acuerdos de los últimos 5 días
 ✅ **Búsqueda flexible** - Busca por número de expediente o por nombre de actor
 ✅ **Cobertura completa** - Todos los juzgados y salas de Quintana Roo
+
+### 🐛 v6.2 - FIX CRÍTICO (24 enero 2026)
+**Problema resuelto:** Las búsquedas en Salas de Segunda Instancia ahora funcionan correctamente.
+- **Antes**: Expedientes en Salas mostraban "Sin publicaciones" aunque existieran
+- **Causa**: El bot usaba el endpoint incorrecto (`buscador_primera.php`)
+- **Solución**: Ahora detecta automáticamente Salas y usa `buscador_segunda.php` con parámetro `areaId`
+- **Resultado**: Las búsquedas en Salas ahora devuelven todos los registros correctamente
 
 ---
 
